@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Bagel+Fat+One&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js");</script>
 <style>
   :root {
     --ink: #1A1033;
@@ -89,6 +90,14 @@
   .dialog-body { position: relative; flex: 1; min-height: 0; background: var(--white); }
   .dialog-body iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .dialog-foot { margin: 0; max-width: none; padding: .5rem 1.25rem; border-top: var(--line); font-size: .95rem; font-weight: 500; }
+
+  /* Scroll flips: every section and card flips into view as the page moves up */
+  body { overflow-x: clip; }
+  main > section, footer { perspective: 1500px; }
+  .gallery, .cards, .vibe-grid, .team { perspective: 1200px; }
+  .js .flip-x { transform-origin: 50% 0; rotate: 1 0 0 -90deg; opacity: 0; transition: rotate 1.6s cubic-bezier(.2,.75,.2,1), opacity .9s ease; }
+  .js .flip-y { transform-origin: 50% 50%; rotate: 0 1 0 90deg; opacity: 0; transition: rotate 1.4s cubic-bezier(.2,.75,.2,1) var(--d, 0s), opacity .8s ease var(--d, 0s), transform .15s; }
+  .js .flip-x.is-flipped, .js .flip-y.is-flipped { rotate: 0 0 0 0deg; opacity: 1; }
 
   /* Header */
   .site-header { background: var(--cream); border-bottom: var(--line); }
@@ -242,6 +251,7 @@
     html { scroll-behavior: auto; }
     .marquee-track { animation: none; }
     .btn, .tile, .reg-btn, .arch svg, .meta { transition: none; }
+    .js .flip-x, .js .flip-y { rotate: none; opacity: 1; transition: none; }
   }
 </style>
 </head>
@@ -427,7 +437,7 @@
 <main id="top">
 
   <section class="hero band" aria-labelledby="hero-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <div>
         <h1 id="hero-title">Go see India. Bring your people.</h1>
         <p class="lede">Small-group trips from Jaipur, starting at ₹5,999. Local guides, zero sprinting between airports.</p>
@@ -461,33 +471,33 @@
   </section>
 
   <section class="band" id="places" aria-labelledby="places-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <div class="head">
         <h2 id="places-title">Where we're taking you</h2>
         <p>Palaces, mountains, rivers and sand dunes. India has range.</p>
       </div>
       <div class="gallery">
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Hawa Mahal at sunrise"><use href="#s-hawa" width="400" height="300"/></svg>
           <figcaption>Hawa Mahal, Amer Fort, Nahargarh<small>Jaipur, Rajasthan</small></figcaption>
         </figure>
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Taj Mahal beside its reflecting pool"><use href="#s-taj" width="400" height="300"/></svg>
           <figcaption>Taj Mahal, Vrindavan, Mathura<small>Uttar Pradesh</small></figcaption>
         </figure>
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of misty pine-covered hills with a cottage, like the Mussoorie hills"><use href="#s-hills" width="400" height="300"/></svg>
           <figcaption>Dehradun, Mussoorie<small>Uttarakhand</small></figcaption>
         </figure>
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of a Himalayan monastery below snow peaks with prayer flags"><use href="#s-himal" width="400" height="300"/></svg>
           <figcaption>Manali, Leh, Ladakh<small>The Himalayas</small></figcaption>
         </figure>
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Ganga ghats at dawn with a boat on the river"><use href="#s-ghat" width="400" height="300"/></svg>
           <figcaption>Rishikesh, Haridwar<small>Uttarakhand</small></figcaption>
         </figure>
-        <figure class="tile">
+        <figure class="tile flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of Jaisalmer fort at sunset with a camel on the dunes"><use href="#s-dune" width="400" height="300"/></svg>
           <figcaption>Jaisalmer, Thar safari<small>Rajasthan</small></figcaption>
         </figure>
@@ -496,7 +506,7 @@
   </section>
 
   <section class="band trips dark" id="trips" aria-labelledby="trips-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <div class="head">
         <h2 id="trips-title">Next trips</h2>
         <p>Two trips, two vibes. Pick one and tell us.</p>
@@ -504,7 +514,7 @@
 
       <div class="cards">
 
-        <article class="trip-card pink">
+        <article class="trip-card pink flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Lake Palace in Udaipur at sunset"><use href="#s-udaipur" width="400" height="300"/></svg>
           <div class="sticker s-cost"><small>from</small>₹5,999</div>
           <div class="card-body">
@@ -526,7 +536,7 @@
           </div>
         </article>
 
-        <article class="trip-card teal">
+        <article class="trip-card teal flip-y">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of a Himalayan monastery below snow peaks"><use href="#s-himal" width="400" height="300"/></svg>
           <div class="sticker s-cost"><small>from</small>₹9,999</div>
           <div class="card-body">
@@ -552,7 +562,7 @@
   </section>
 
   <section class="band about" id="about" aria-labelledby="about-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <div>
         <h2 id="about-title">Who are we</h2>
         <p>We're <span lang="hi">बंजारा</span> Buddy, a small travel crew based in Jaipur. <span lang="hi">बंजारा</span> is the Hindi word for a wanderer, and that's how we like to travel: slowly, with good company and no rush.</p>
@@ -560,14 +570,14 @@
       </div>
       <div class="team">
         <!-- To use a photo, replace the avatar div with an img tag -->
-        <div class="person">
+        <div class="person flip-y">
           <div class="avatar" aria-hidden="true">V</div>
           <div>
             <h3>Virat Jakhar</h3>
             <p>Trip organiser</p>
           </div>
         </div>
-        <div class="person">
+        <div class="person flip-y">
           <div class="avatar" aria-hidden="true">S</div>
           <div>
             <h3>Sumit Jakhar</h3>
@@ -579,22 +589,22 @@
   </section>
 
   <section class="band vibes" id="vibes" aria-labelledby="vibes-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <h2 id="vibes-title">Why travel with us</h2>
       <dl class="vibe-grid">
-        <div class="vibe">
+        <div class="vibe flip-y">
           <dt>Small groups</dt>
           <dd>Small enough to share one vehicle and one meal table, so nobody waits and everyone has a say.</dd>
         </div>
-        <div class="vibe">
+        <div class="vibe flip-y">
           <dt>Local guides, not scripts</dt>
           <dd>Every guide lives where they lead. They know which chai stall opens early and which road is shut for the festival.</dd>
         </div>
-        <div class="vibe">
+        <div class="vibe flip-y">
           <dt>Time to chill</dt>
           <dd>We keep travel days under five hours and book two nights in most places, so you can unpack.</dd>
         </div>
-        <div class="vibe">
+        <div class="vibe flip-y">
           <dt>Lower-carbon by design</dt>
           <dd>Trains and boats replace flights wherever a ground route exists. We publish the emissions of every itinerary.</dd>
         </div>
@@ -603,7 +613,7 @@
   </section>
 
   <section class="band enquire" id="enquire" aria-labelledby="enquire-title">
-    <div class="wrap">
+    <div class="wrap flip-x">
       <div>
         <h2 id="enquire-title">Tell us where you'd like to go</h2>
         <p>Pick a listed trip or describe your own idea. A planner will reply within two working days with a first route and a price.</p>
@@ -645,7 +655,7 @@
 </main>
 
 <footer class="dark">
-  <div class="wrap">
+  <div class="wrap flip-x">
     <p class="logo-sm"><span lang="hi">बंजारा</span> Buddy, Jaipur, Rajasthan, India</p>
     <p><a href="mailto:banjarabuddy119@gmail.com">banjarabuddy119@gmail.com</a> · <a href="tel:+917427029582">+91 7427029582</a> · <a href="tel:+917014788454">+91 7014788454</a></p>
   </div>
@@ -663,6 +673,23 @@
 </dialog>
 
 <script>
+  // Scroll flips
+  (function () {
+    var targets = document.querySelectorAll('.flip-x, .flip-y');
+    if (!('IntersectionObserver' in window)) { targets.forEach(function (el) { el.classList.add('is-flipped'); }); return; }
+    // stagger cards that share a grid
+    document.querySelectorAll('.gallery, .cards, .vibe-grid, .team').forEach(function (grid) {
+      Array.prototype.forEach.call(grid.children, function (el, i) { el.style.setProperty('--d', (i % 3) * 0.22 + 's'); });
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) e.target.classList.add('is-flipped');
+        else if (e.boundingClientRect.top > 0) e.target.classList.remove('is-flipped'); // flips again when scrolled back into view
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    targets.forEach(function (el) { io.observe(el); });
+  })();
+
   // Hero slideshow
   (function () {
     var slides = document.querySelectorAll('.arch svg');
