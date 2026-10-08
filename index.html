@@ -112,8 +112,10 @@
   .hero h1 { font-size: clamp(3.3rem, 8.6vw, 7rem); letter-spacing: -.01em; }
   .hero p.lede { font-size: 1.3rem; margin-top: 1.5rem; max-width: 36ch; font-weight: 500; }
   .hero .actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
-  .hero-art { position: relative; justify-self: center; width: min(100%, 400px); padding: 14px 14px 0 0; }
+  .hero-show { justify-self: center; width: min(100%, 400px); }
+  .hero-art { position: relative; padding: 14px 14px 0 0; }
   .arch {
+    position: relative;
     aspect-ratio: 5 / 6;
     border: 4px solid var(--ink);
     border-radius: 999px 999px 14px 14px;
@@ -122,10 +124,18 @@
     transform: rotate(2deg);
     background: var(--pink);
   }
-  .arch svg { width: 100%; height: 100%; }
-  .hero-art .s-date { top: 12%; left: -12px; background: var(--pink); width: 5.4rem; height: 5.4rem; border-radius: 50%; display: grid; place-content: center; font-size: 1.15rem; transform: rotate(-12deg); }
-  .hero-art .s-price { bottom: 7%; right: -4px; background: var(--teal); border-radius: 14px; padding: .55rem .9rem; font-size: 1.3rem; transform: rotate(5deg); }
-  .hero-art .s-price small { display: block; font-family: var(--body); font-weight: 500; font-size: .85rem; }
+  .arch svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .4s ease; }
+  .arch svg.is-active { opacity: 1; }
+  .meta { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; }
+  .meta.is-active { opacity: 1; }
+  .meta .s-date { top: 12%; left: -12px; width: 5.4rem; height: 5.4rem; border-radius: 50%; display: grid; place-content: center; font-size: 1.15rem; transform: rotate(-12deg); }
+  .meta .s-price { bottom: 7%; right: -4px; border-radius: 14px; padding: .55rem .9rem; font-size: 1.3rem; transform: rotate(5deg); }
+  .meta .s-price small { display: block; font-family: var(--body); font-weight: 500; font-size: .85rem; }
+  .meta.m1 .s-date { background: var(--pink); } .meta.m1 .s-price { background: var(--teal); }
+  .meta.m2 .s-date { background: var(--teal); } .meta.m2 .s-price { background: var(--pink); }
+  .hero-controls { display: flex; justify-content: center; align-items: center; gap: .7rem; margin-top: 1.5rem; }
+  .dot { width: 2.6rem; height: 1.4rem; border: var(--line); border-radius: 999px; background: var(--cream); cursor: pointer; padding: 0; }
+  .dot[aria-current="true"] { background: var(--ink); }
 
   /* Places */
   .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 3rem; margin-bottom: 2.75rem; }
@@ -156,8 +166,11 @@
   .chips li { background: var(--cream); border: 2px solid var(--ink); border-radius: 999px; padding: .1rem .8rem; font-weight: 700; font-size: .98rem; }
   .card-body ul.inc { margin: 0 0 1.4rem; padding-left: 1.15rem; }
   .card-body ul.inc li { margin-bottom: .3rem; }
-  .card-body .btn { align-self: flex-start; margin-top: auto; box-shadow: 4px 4px 0 var(--cream); }
+  .card-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 1rem; }
+  .card-body .btn { box-shadow: 4px 4px 0 var(--cream); }
   .card-body .btn:hover { box-shadow: 1px 1px 0 var(--cream); }
+  .card-body .btn-alt { background: var(--cream); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .card-body .btn-alt:hover { box-shadow: 1px 1px 0 var(--ink); }
 
   /* Vibe check */
   .vibes { background: var(--blush); border-block: var(--line); }
@@ -214,7 +227,7 @@
   /* Responsive */
   @media (max-width: 900px) {
     .hero .wrap, .enquire .wrap, .about .wrap { grid-template-columns: 1fr; }
-    .hero-art { margin-top: .5rem; }
+    .hero-show { margin-top: .5rem; }
     .cards, .vibe-grid { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: repeat(2, 1fr); }
   }
@@ -228,7 +241,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .marquee-track { animation: none; }
-    .btn, .tile, .reg-btn { transition: none; }
+    .btn, .tile, .reg-btn, .arch svg, .meta { transition: none; }
   }
 </style>
 </head>
@@ -239,14 +252,36 @@
   <defs>
     <linearGradient id="g-hawa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6A97E"/><stop offset="1" stop-color="#FCE3B8"/></linearGradient>
     <linearGradient id="g-taj" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8EBBD6"/><stop offset="1" stop-color="#FCE9C8"/></linearGradient>
-    <linearGradient id="g-boat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F9C46F"/><stop offset="1" stop-color="#F7E7C4"/></linearGradient>
     <linearGradient id="g-himal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F5F9A"/><stop offset="1" stop-color="#D5E6F3"/></linearGradient>
     <linearGradient id="g-ghat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EE8446"/><stop offset="1" stop-color="#FBE3A5"/></linearGradient>
     <linearGradient id="g-dune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EE8A55"/><stop offset="1" stop-color="#F9D18A"/></linearGradient>
+    <linearGradient id="g-udai" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EE7A58"/><stop offset="1" stop-color="#FBD08A"/></linearGradient>
+    <linearGradient id="g-lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B27A"/><stop offset="1" stop-color="#A8506F"/></linearGradient>
+    <linearGradient id="g-hills" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A8D5E8"/><stop offset="1" stop-color="#FDF0D5"/></linearGradient>
     <pattern id="win" width="20" height="16" patternUnits="userSpaceOnUse">
       <path d="M5 14V8Q5 3 10 3Q15 3 15 8V14Z" fill="#FCE3B8"/>
     </pattern>
   </defs>
+
+  <!-- Lake Palace, Udaipur -->
+  <symbol id="s-udaipur" viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="url(#g-udai)"/>
+    <circle cx="200" cy="150" r="40" fill="#FFD890"/>
+    <path d="M0 190Q60 140 120 175T240 160T400 180V220H0Z" fill="#8E5A6E"/>
+    <path d="M0 208Q90 172 170 202T330 192T400 202V224H0Z" fill="#70405A"/>
+    <rect y="206" width="400" height="94" fill="url(#g-lake)"/>
+    <g fill="#FBF4E6">
+      <rect x="110" y="192" width="180" height="16"/>
+      <rect x="125" y="162" width="150" height="30"/>
+      <rect x="130" y="140" width="22" height="22"/><rect x="248" y="140" width="22" height="22"/><rect x="185" y="130" width="30" height="32"/>
+      <path d="M127 140Q141 116 155 140Z"/><path d="M245 140Q259 116 273 140Z"/><path d="M180 130Q200 98 220 130Z"/>
+    </g>
+    <g stroke="#F6C96B" stroke-width="3"><path d="M141 118V106M259 118V106M200 100V84"/></g>
+    <g fill="#B0656B"><rect x="140" y="172" width="8" height="14"/><rect x="160" y="172" width="8" height="14"/><rect x="180" y="172" width="8" height="14"/><rect x="212" y="172" width="8" height="14"/><rect x="232" y="172" width="8" height="14"/><rect x="252" y="172" width="8" height="14"/></g>
+    <rect x="110" y="210" width="180" height="34" fill="#FBF4E6" opacity=".22"/>
+    <g stroke="#FBD08A" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M60 236h70M270 232h80M120 262h90M250 276h70"/></g>
+    <path d="M312 252H352L344 260H320Z" fill="#3B1F2B"/>
+  </symbol>
 
   <!-- Hawa Mahal, Jaipur -->
   <symbol id="s-hawa" viewBox="0 0 400 300">
@@ -272,6 +307,22 @@
     </g>
   </symbol>
 
+  <!-- Hill station: Dehradun and Mussoorie -->
+  <symbol id="s-hills" viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="url(#g-hills)"/>
+    <circle cx="322" cy="66" r="24" fill="#FFE9A8"/>
+    <g fill="#FFFFFF" opacity=".85"><ellipse cx="90" cy="64" rx="34" ry="10"/><ellipse cx="112" cy="56" rx="22" ry="9"/><ellipse cx="250" cy="96" rx="30" ry="8"/></g>
+    <path d="M0 172Q70 120 140 160T260 130T400 160V300H0Z" fill="#7FB3A8"/>
+    <rect y="170" width="400" height="22" fill="#FFFFFF" opacity=".35"/>
+    <path d="M0 212Q90 160 180 202T400 182V300H0Z" fill="#3E8E6B"/>
+    <rect x="166" y="174" width="60" height="30" fill="#F6E7CF"/>
+    <polygon points="160,174 196,146 232,174" fill="#B8412F"/>
+    <rect x="214" y="150" width="8" height="16" fill="#8A3326"/>
+    <g fill="#4A1424"><rect x="176" y="184" width="9" height="12"/><rect x="196" y="184" width="9" height="12"/><rect x="212" y="184" width="9" height="12"/></g>
+    <path d="M0 258Q120 216 230 246T400 236V300H0Z" fill="#1F6B4F"/>
+    <g fill="#12452F"><g transform="translate(60 236) scale(1)"><polygon points="0,-44 13,-22 -13,-22"/><polygon points="0,-30 17,-4 -17,-4"/><polygon points="0,-14 20,16 -20,16"/><rect x="-3" y="16" width="6" height="8"/></g><g transform="translate(92 246) scale(0.8)"><polygon points="0,-44 13,-22 -13,-22"/><polygon points="0,-30 17,-4 -17,-4"/><polygon points="0,-14 20,16 -20,16"/><rect x="-3" y="16" width="6" height="8"/></g><g transform="translate(332 226) scale(1.05)"><polygon points="0,-44 13,-22 -13,-22"/><polygon points="0,-30 17,-4 -17,-4"/><polygon points="0,-14 20,16 -20,16"/><rect x="-3" y="16" width="6" height="8"/></g><g transform="translate(364 240) scale(0.85)"><polygon points="0,-44 13,-22 -13,-22"/><polygon points="0,-30 17,-4 -17,-4"/><polygon points="0,-14 20,16 -20,16"/><rect x="-3" y="16" width="6" height="8"/></g><g transform="translate(30 250) scale(0.7)"><polygon points="0,-44 13,-22 -13,-22"/><polygon points="0,-30 17,-4 -17,-4"/><polygon points="0,-14 20,16 -20,16"/><rect x="-3" y="16" width="6" height="8"/></g></g>
+  </symbol>
+
   <!-- Taj Mahal, Agra -->
   <symbol id="s-taj" viewBox="0 0 400 300">
     <rect width="400" height="300" fill="url(#g-taj)"/>
@@ -290,25 +341,6 @@
     <path d="M200 84V62" stroke="#E0A800" stroke-width="3"/><circle cx="200" cy="60" r="4" fill="#E0A800"/>
     <path d="M184 215V176Q200 148 216 176V215Z" fill="#C9B793"/>
     <rect x="150" y="212" width="100" height="3" fill="#D8C9AA"/>
-  </symbol>
-
-  <!-- Kerala backwaters houseboat -->
-  <symbol id="s-boat" viewBox="0 0 400 300">
-    <rect width="400" height="300" fill="url(#g-boat)"/>
-    <circle cx="300" cy="150" r="30" fill="#F59B4B"/>
-    <rect y="176" width="400" height="124" fill="#1E8E85"/>
-    <rect y="168" width="400" height="12" fill="#2F6B3F"/>
-    <g stroke="#4A3320" stroke-width="6" fill="none" stroke-linecap="round"><path d="M50 180Q58 140 68 96"/><path d="M350 180Q344 150 336 112"/></g>
-    <g stroke="#2E7D32" stroke-width="5" fill="none" stroke-linecap="round">
-      <path d="M68 96q-36-8-52 14"/><path d="M68 96q30-22 56-6"/><path d="M68 96q-14-30-40-30"/><path d="M68 96q20-30 46-26"/>
-      <path d="M336 112q-30-8-46 12"/><path d="M336 112q28-20 52-4"/><path d="M336 112q-10-26-34-26"/>
-    </g>
-    <path d="M95 218H305L285 238H115Z" fill="#5A1F14"/>
-    <rect x="125" y="190" width="150" height="28" fill="#D9A441"/>
-    <path d="M108 192Q200 132 292 192Z" fill="#8B5A2B"/>
-    <path d="M140 180L128 192M170 168L160 192M200 162V192M230 168L240 192M260 180L272 192" stroke="#6B4421" stroke-width="3"/>
-    <g fill="#5A1F14"><rect x="140" y="198" width="18" height="14"/><rect x="170" y="198" width="18" height="14"/><rect x="212" y="198" width="18" height="14"/><rect x="242" y="198" width="18" height="14"/></g>
-    <g stroke="#8FD0C8" stroke-width="3" stroke-linecap="round"><path d="M40 255h60M150 270h80M260 258h70M300 282h60"/></g>
   </symbol>
 
   <!-- Ladakh: gompa and Himalayan peaks -->
@@ -400,17 +432,30 @@
         <h1 id="hero-title">Go see India. Bring your people.</h1>
         <p class="lede">Small-group trips from Jaipur, starting at ₹5,999. Local guides, zero sprinting between airports.</p>
         <div class="actions">
-          <a class="btn" href="#trips">Grab a spot</a>
+          <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSd-8ncSLXe7Fokjg7z4w-dYGFfW8nH-Pjy3-DUouKIRDbRlHA/viewform" target="_blank" rel="noopener" data-open-form>Grab a spot</a>
           <a class="btn btn-alt" href="#enquire">Plan your own</a>
         </div>
       </div>
 
-      <div class="hero-art">
-        <div class="arch">
-          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of the Hawa Mahal in Jaipur at sunrise"><use href="#s-hawa" width="400" height="300"/></svg>
+      <div class="hero-show" role="group" aria-roledescription="slideshow" aria-label="Our two upcoming trips">
+        <div class="hero-art">
+          <div class="arch">
+            <svg class="is-active" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of the Lake Palace in Udaipur at sunset"><use href="#s-udaipur" width="400" height="300"/></svg>
+            <svg viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" role="img" aria-label="Illustration of a Himalayan monastery below snow peaks" aria-hidden="true"><use href="#s-himal" width="400" height="300"/></svg>
+          </div>
+          <div class="meta m1 is-active" aria-hidden="true">
+            <div class="sticker s-date">Oct</div>
+            <div class="sticker s-price"><small>Jaipur to Udaipur</small>₹5,999</div>
+          </div>
+          <div class="meta m2" aria-hidden="true">
+            <div class="sticker s-date">Nov</div>
+            <div class="sticker s-price"><small>Jaipur to Himachal</small>₹9,999</div>
+          </div>
         </div>
-        <div class="sticker s-date" aria-hidden="true">22<br>Oct</div>
-        <div class="sticker s-price"><small>Jaipur to Udaipur</small>₹5,999</div>
+        <div class="hero-controls">
+          <button type="button" class="dot" aria-label="Show the Jaipur to Udaipur trip" aria-current="true"></button>
+          <button type="button" class="dot" aria-label="Show the Jaipur to Himachal trip" aria-current="false"></button>
+        </div>
       </div>
     </div>
   </section>
@@ -424,27 +469,27 @@
       <div class="gallery">
         <figure class="tile">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Hawa Mahal at sunrise"><use href="#s-hawa" width="400" height="300"/></svg>
-          <figcaption>Hawa Mahal<small>Jaipur, Rajasthan</small></figcaption>
+          <figcaption>Hawa Mahal, Amer Fort, Nahargarh<small>Jaipur, Rajasthan</small></figcaption>
         </figure>
         <figure class="tile">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Taj Mahal beside its reflecting pool"><use href="#s-taj" width="400" height="300"/></svg>
-          <figcaption>Taj Mahal<small>Agra, Uttar Pradesh</small></figcaption>
+          <figcaption>Taj Mahal, Vrindavan, Mathura<small>Uttar Pradesh</small></figcaption>
         </figure>
         <figure class="tile">
-          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of a houseboat on the Kerala backwaters"><use href="#s-boat" width="400" height="300"/></svg>
-          <figcaption>Alleppey backwaters<small>Kerala</small></figcaption>
+          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of misty pine-covered hills with a cottage, like the Mussoorie hills"><use href="#s-hills" width="400" height="300"/></svg>
+          <figcaption>Dehradun, Mussoorie<small>Uttarakhand</small></figcaption>
         </figure>
         <figure class="tile">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of a Himalayan monastery below snow peaks with prayer flags"><use href="#s-himal" width="400" height="300"/></svg>
-          <figcaption>Himalayan monasteries<small>Leh, Ladakh</small></figcaption>
+          <figcaption>Manali, Leh, Ladakh<small>The Himalayas</small></figcaption>
         </figure>
         <figure class="tile">
-          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Varanasi ghats at dawn with a boat on the Ganga"><use href="#s-ghat" width="400" height="300"/></svg>
-          <figcaption>Ganga ghats<small>Varanasi, Uttar Pradesh</small></figcaption>
+          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Ganga ghats at dawn with a boat on the river"><use href="#s-ghat" width="400" height="300"/></svg>
+          <figcaption>Rishikesh, Haridwar<small>Uttarakhand</small></figcaption>
         </figure>
         <figure class="tile">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of Jaisalmer fort at sunset with a camel on the dunes"><use href="#s-dune" width="400" height="300"/></svg>
-          <figcaption>Jaisalmer Fort and the Thar<small>Rajasthan</small></figcaption>
+          <figcaption>Jaisalmer, Thar safari<small>Rajasthan</small></figcaption>
         </figure>
       </div>
     </div>
@@ -460,7 +505,7 @@
       <div class="cards">
 
         <article class="trip-card pink">
-          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Hawa Mahal"><use href="#s-hawa" width="400" height="300"/></svg>
+          <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Lake Palace in Udaipur at sunset"><use href="#s-udaipur" width="400" height="300"/></svg>
           <div class="sticker s-cost"><small>from</small>₹5,999</div>
           <div class="card-body">
             <h3>Jaipur to Udaipur</h3>
@@ -468,19 +513,22 @@
             <ul class="chips">
               <li>3 days</li><li>Departs 22 Oct 2026</li><li>17 travelers</li>
             </ul>
-            <p>A short, easy route from the Pink City to the lakes of Udaipur. See Amer Fort and the City Palace, then end the trip with a boat ride on Lake Pichola at sunset.</p>
+            <p>A short, easy route from the Pink City to the lakes of Udaipur. See the City Palace. After that, we'll go for a boat ride on Lake Pichola for a sunset view.</p>
             <ul class="inc">
               <li>Travel between Jaipur and Udaipur</li>
               <li>Local guide for the main sights</li>
               <li>Small group of 17 travelers</li>
             </ul>
-            <a class="btn" href="#enquire" data-trip="Jaipur to Udaipur">Ask about this trip</a>
+            <div class="card-actions">
+              <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSd-8ncSLXe7Fokjg7z4w-dYGFfW8nH-Pjy3-DUouKIRDbRlHA/viewform" target="_blank" rel="noopener" data-open-form>Register now</a>
+              <a class="btn btn-alt" href="#enquire" data-trip="Jaipur to Udaipur">Ask about this trip</a>
+            </div>
           </div>
         </article>
 
         <article class="trip-card teal">
           <svg class="scene" viewBox="0 0 400 300" role="img" aria-label="Illustration of a Himalayan monastery below snow peaks"><use href="#s-himal" width="400" height="300"/></svg>
-          <div class="sticker s-cost"><small>from</small>₹8,999</div>
+          <div class="sticker s-cost"><small>from</small>₹9,999</div>
           <div class="card-body">
             <h3>Jaipur to Himachal</h3>
             <p class="sub">Mountain towns, pine forests and snow views</p>
@@ -493,7 +541,9 @@
               <li>Local guide and guided walks</li>
               <li>Small-group travel</li>
             </ul>
-            <a class="btn" href="#enquire" data-trip="Jaipur to Himachal">Ask about this trip</a>
+            <div class="card-actions">
+              <a class="btn" href="#enquire" data-trip="Jaipur to Himachal">Ask about this trip</a>
+            </div>
           </div>
         </article>
 
@@ -613,15 +663,43 @@
 </dialog>
 
 <script>
+  // Hero slideshow
+  (function () {
+    var slides = document.querySelectorAll('.arch svg');
+    var metas = document.querySelectorAll('.hero-art .meta');
+    var dots = document.querySelectorAll('.hero-controls .dot');
+    var idx = 0, timer = null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var paused = reduce; // people who prefer reduced motion get no auto-advance; the dots still work
+
+    function show(i) {
+      idx = i;
+      slides.forEach(function (el, n) { el.classList.toggle('is-active', n === i); el.setAttribute('aria-hidden', n === i ? 'false' : 'true'); });
+      metas.forEach(function (el, n) { el.classList.toggle('is-active', n === i); });
+      dots.forEach(function (el, n) { el.setAttribute('aria-current', n === i ? 'true' : 'false'); });
+    }
+    function start() { stop(); if (!paused) timer = setInterval(function () { show((idx + 1) % slides.length); }, 2000); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    dots.forEach(function (el, n) { el.addEventListener('click', function () { show(n); start(); }); });
+    var box = document.querySelector('.hero-show');
+    box.addEventListener('mouseenter', stop);
+    box.addEventListener('mouseleave', start);
+    box.addEventListener('focusin', stop);
+    box.addEventListener('focusout', start);
+    start();
+  })();
+
   // Register now: open the Google Form in a popup
   var regDialog = document.getElementById('register-dialog');
   var regFrame = document.getElementById('register-frame');
   document.querySelectorAll('[data-open-form]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
       if (typeof regDialog.showModal !== 'function') {
-        window.open('https://docs.google.com/forms/d/e/1FAIpQLSd-8ncSLXe7Fokjg7z4w-dYGFfW8nH-Pjy3-DUouKIRDbRlHA/viewform', '_blank', 'noopener');
-        return;
+        if (btn.tagName === 'BUTTON') window.open(regFrame.getAttribute('data-src').replace('?embedded=true', ''), '_blank', 'noopener');
+        return; // links open the form in a new tab instead
       }
+      e.preventDefault();
       if (!regFrame.getAttribute('src')) regFrame.setAttribute('src', regFrame.getAttribute('data-src'));
       regDialog.showModal();
     });
